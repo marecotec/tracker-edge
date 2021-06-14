@@ -35,9 +35,9 @@ constexpr unsigned int TrackerLowBatteryStartTime = 20; // seconds to debounce l
 constexpr unsigned int TrackerLowBatteryDebounceTime = 5; // seconds to debounce low battery condition
 constexpr unsigned int TrackerChargingAwakeEvalTime = 10; // seconds to sample the PMIC charging state
 constexpr unsigned int TrackerChargingSleepEvalTime = 1; // seconds to sample the PMIC charging state
-constexpr uint16_t TrackerChargeCurrentHigh = 1024; // milliamps
-constexpr uint16_t TrackerChargeCurrentLow = 512; // milliamps
-constexpr uint16_t TrackerInputCurrent = 1500; // milliamps
+constexpr uint16_t TrackerChargeCurrentHigh = 570; // milliamps
+constexpr uint16_t TrackerChargeCurrentLow = 100; // milliamps
+constexpr uint16_t TrackerInputCurrent = 570; // milliamps
 
 void ctrl_request_custom_handler(ctrl_request* req)
 {

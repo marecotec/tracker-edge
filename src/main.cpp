@@ -18,6 +18,7 @@
 
 #include "tracker_config.h"
 #include "tracker.h"
+#include "bmi160.h"
 
 SYSTEM_THREAD(ENABLED);
 SYSTEM_MODE(SEMI_AUTOMATIC);
@@ -36,12 +37,29 @@ SerialLogHandler logHandler(115200, LOG_LEVEL_TRACE, {
     { "net.ppp.client", LOG_LEVEL_INFO },
 });
 
+void locationGenerationCallback(JSONWriter &writer, LocationPoint &point, const void *context); // Forward declaration
+
 void setup()
 {
     Tracker::instance().init();
+    Tracker::instance().location.regLocGenCallback(locationGenerationCallback);
+
+    Particle.connect();
 }
 
 void loop()
 {
     Tracker::instance().loop();
+}
+
+void locationGenerationCallback(JSONWriter &writer, LocationPoint &point, const void *context)
+{
+    Bmi160Accelerometer data;
+    int ret = BMI160.getAccelerometer(data);
+    if (ret == SYSTEM_ERROR_NONE) {
+        writer.name("x_accel").value(data.x, 3);
+        writer.name("y_accel").value(data.y, 3);
+        writer.name("z_accel").value(data.z, 3);
+    }
+    writer.name("v_acc").value(point.verticalAccuracy, 2);
 }
