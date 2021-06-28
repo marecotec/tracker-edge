@@ -50,6 +50,12 @@ void setup()
 void loop()
 {
     Tracker::instance().loop();
+    PMIC power(true);
+    Log.info("Current PMIC settings:");
+    Log.info("VIN Vmin: %u", power.getInputVoltageLimit());
+    Log.info("VIN Imax: %u", power.getInputCurrentLimit());
+    Log.info("Ichg: %u", power.getChargeCurrentValue());
+    Log.info("Iterm: %u", power.getChargeVoltageValue());
 }
 
 void locationGenerationCallback(JSONWriter &writer, LocationPoint &point, const void *context)
