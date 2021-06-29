@@ -55,41 +55,29 @@ void loop()
 {
     Tracker::instance().loop();
 
-    PMIC power(true);
-    Log.info("Current PMIC settings:");
-    Log.info("VIN Vmin: %u", power.getInputVoltageLimit());
-    Log.info("VIN Imax: %u", power.getInputCurrentLimit());
-    Log.info("Ichg: %u", power.getChargeCurrentValue());
-    Log.info("Iterm: %u", power.getChargeVoltageValue());
-
-    int powerSource = System.powerSource();
-    int batteryState = System.batteryState();
-   float batterySoc = System.batteryCharge();
-
-    constexpr char const* batteryStates[] = {
-    "unknown", "not charging", "charging",       "charged", "discharging", "fault", "disconnected"
-   };
-
-    constexpr char const* powerSources[] = {
-    "unknown", "vin", "usb host", "usb adapter",
-    "usb otg", "battery"
-   };
-
-   Log.info("Power source: %s", powerSources[std::max(0, powerSource)]);
-   Log.info("Battery state: %s", batteryStates[std::max(0, batteryState)]);
-   Log.info("Battery charge: %f", batterySoc);
-
-    Particle.publish("State",batteryStates[std::max(0,batteryState)]);
-    Particle.publish("Source",powerSources[std::max(0,powerSource)]);
-
-    
 }
 
 
 void locationGenerationCallback(JSONWriter &writer, LocationPoint &point, const void *context)
 {
     Bmi160Accelerometer data;
+
+    PMIC power(true);
+    
+    int powerSource = System.powerSource();
+    int batteryState = System.batteryState();
+    float batterySoc = System.batteryCharge();
+
+    constexpr char const* batteryStates[] = {
+    "unknown", "not charging", "charging", "charged", "discharging", "fault", "disconnected"
+    };
+
+    constexpr char const* powerSources[] = {
+    "unknown", "vin", "usb host", "usb adapter",
+    "usb otg", "battery" };
+
     int ret = BMI160.getAccelerometer(data);
+
     if (ret == SYSTEM_ERROR_NONE) {
         writer.name("x_accel").value(data.x, 3);
         writer.name("y_accel").value(data.y, 3);
@@ -97,6 +85,15 @@ void locationGenerationCallback(JSONWriter &writer, LocationPoint &point, const 
        
     }
     writer.name("v_acc").value(point.verticalAccuracy, 2);
+    writer.name("VIN_Vmin").value(power.getInputVoltageLimit(), 2);
+    writer.name("VIN_Imax").value(power.getInputCurrentLimit(), 2);
+    writer.name("Ichg").value(power.getChargeCurrentValue(), 2);
+    writer.name("Iterm").value(power.getChargeVoltageValue(), 2);
+    writer.name("Power_Source").value(batteryStates[std::max(0,batteryState)]);
+    writer.name("Battery_State").value(batteryStates[std::max(0, batteryState)]);
+    writer.name("Battery_Charge").value(batterySoc);
+
+
 }
 
 
