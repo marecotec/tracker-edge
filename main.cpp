@@ -64,17 +64,12 @@ void locationGenerationCallback(JSONWriter &writer, LocationPoint &point, const 
 
     PMIC power(true);
     
-    int powerSource = System.powerSource();
     int batteryState = System.batteryState();
     float batterySoc = System.batteryCharge();
 
     constexpr char const* batteryStates[] = {
     "unknown", "not charging", "charging", "charged", "discharging", "fault", "disconnected"
     };
-
-    constexpr char const* powerSources[] = {
-    "unknown", "vin", "usb host", "usb adapter",
-    "usb otg", "battery" };
 
     int ret = BMI160.getAccelerometer(data);
 
