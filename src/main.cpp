@@ -45,7 +45,7 @@ void setup()
     Tracker::instance().location.regLocGenCallback(locationGenerationCallback);
 
     SystemPowerConfiguration conf;
-    conf.powerSourceMaxCurrent(128);
+    conf.powerSourceMaxCurrent(500);
     System.setPowerConfiguration(conf);
 
     Particle.connect();
